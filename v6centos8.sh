@@ -56,9 +56,12 @@ setgid 65535
 setuid 65535
 stacksize 6291456 
 flush
+#auth strong
 
-$(awk -F "/" '{print "\n" \
-"" $1 "\n" \
+users $(awk -F "/" 'BEGIN{ORS="";} {print $1 ":CL:" $2 " "}' ${WORKDATA})
+
+$(awk -F "/" '{print "auth strong\n" \
+"allow " $1 "\n" \
 "proxy -6 -n -a -p" $4 " -i" $3 " -e"$5"\n" \
 "flush\n"}' ${WORKDATA})
 EOF
@@ -88,6 +91,7 @@ $(awk -F "/" '{print "ifconfig '$main_interface' inet6 add " $5 "/64"}' ${WORKDA
 EOF
 }
 echo "installing apps"
+yum -y install wget
 yum -y install gcc net-tools bsdtar zip make >/dev/null
 
 install_3proxy
@@ -108,7 +112,6 @@ LAST_PORT=11000
 gen_data >$WORKDIR/data.txt
 gen_iptables >$WORKDIR/boot_iptables.sh
 gen_ifconfig >$WORKDIR/boot_ifconfig.sh
-echo NM_CONTROLLED="no" >> /etc/sysconfig/network-scripts/ifcfg-${main_interface}
 chmod +x $WORKDIR/boot_*.sh /etc/rc.local
 
 gen_3proxy >/usr/local/etc/3proxy/3proxy.cfg
