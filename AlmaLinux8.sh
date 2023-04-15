@@ -76,7 +76,7 @@ EOF
 
 gen_ifconfig() {
     cat <<EOF
-$(awk -F "/" '{print "ifconfig venet0 inet6 add " $5 "/48"}' ${WORKDATA})
+$(awk -F "/" '{print "ifconfig eth0 inet6 add " $5 "/48"}' ${WORKDATA})
 EOF
 }
 echo "installing apps"
@@ -89,8 +89,8 @@ WORKDIR="/home/vpsus"
 WORKDATA="${WORKDIR}/data.txt"
 mkdir $WORKDIR && cd $_
 
-IP4=$(curl -4 -s icanhazip.com)
-IP6=$(curl -6 -s icanhazip.com | cut -f1-4 -d':')
+IP4='179.61.251.167'
+IP6='2a0f:5707:aaf1:006c'
 
 echo "Internal ip = ${IP4}. Exteranl sub for ip6 = ${IP6}"
 
